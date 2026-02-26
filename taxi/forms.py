@@ -12,8 +12,11 @@ class CleanLicenseMixin:
         driver_license = self.cleaned_data["license_number"]
         if len(driver_license) != 8:
             raise ValidationError("The license must contain 8 symbols")
-        if not driver_license[:3].isupper() or not driver_license[:3].isalpha():
-            raise ValidationError("First three symbols must be 3 uppercased letters")
+        if (not driver_license[:3].isupper()
+                or not driver_license[:3].isalpha()):
+            raise ValidationError(
+                "First three symbols must be 3 uppercased letters"
+            )
         if not driver_license[3:].isdigit():
             raise ValidationError("Last five symbols must be digits")
         return driver_license
@@ -22,11 +25,13 @@ class CleanLicenseMixin:
 class DriverCreationForm(UserCreationForm, CleanLicenseMixin):
     password_len = 8
 
-    class Meta (UserCreationForm.Meta):
+    class Meta(UserCreationForm.Meta):
         model = Driver
-        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "license_number",)
-
-
+        fields = UserCreationForm.Meta.fields + (
+            "first_name",
+            "last_name",
+            "license_number",
+        )
 
 
 class DriverLicenseUpdateForm(forms.ModelForm, CleanLicenseMixin):
@@ -40,6 +45,7 @@ class CarCreationForm(forms.ModelForm):
         queryset=get_user_model().objects.all(),
         widget=CheckboxSelectMultiple,
     )
+
     class Meta:
         model = Car
         fields = "__all__"
